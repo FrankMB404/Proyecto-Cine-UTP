@@ -1,25 +1,27 @@
 package javaapplication8;
 import java.util.Scanner;
 public class JavaApplication8 {
+    //impresion de la interfaz del cine
     public static void cine(String array [][]){
         char letra = 'G';
         System.out.printf("\n%20s\n", "PANTALLA");
         System.out.print("   |");
         for(int i = 1; i<25; i++){
-            System.out.print("-");
+            System.out.print("_");
         }
         System.out.print("|");
         System.out.println("");
         System.out.println("");
-        
+        //Impresion de asientos vacios y asignación de letras a las columnas
         for(int i = 0; i<7; i++){
             for(int j = 0; j<10; j++){
-                System.out.printf(array[i][j] + "  ");
+                System.out.print(array[i][j] + "  ");
             }
             letra = (char)('G' - i);
             System.out.print(letra);
             System.out.println("");
         }
+        //Numero de columna
         for(int i = 10; i>0; i--){
             if(i>=10){
                 System.out.print(i + " ");
@@ -28,27 +30,28 @@ public class JavaApplication8 {
             }
         }
         System.out.println("\nX = Seleccionada    O = Libre");
+        System.out.println("\tEntrada: S/15");
         System.out.println("");
-    }
-    
-    public static void menuPreview(){
-        System.out.println("""
-                           |---------- CINESTAR ---------|
-                           |                             |
-                           |    1. Reservar Asiento      | 
-                           |    2. Finalizar             |
-                           |-----------------------------|
-                           """);
     }
     
     public static void menu(){
         System.out.println("""
-                           |---------- CINESTAR ---------|
+                            __________ CINESTAR _________
                            |                             |
-                           |    1. Vista Previa          | 
-                           |    2. Reservar Asiento      | 
+                           |    1. Ver Sala de Asientos  |
+                           |    2. Ver Mi Carrito        |   
                            |    3. Finalizar             |
-                           |-----------------------------|
+                           |_____________________________|
+                           """);
+    }
+    
+    public static void menu2(){
+        System.out.println("""
+                            __________ CINESTAR _________
+                           |                             |
+                           |    1. Reservar Asientos     |
+                           |    0. Menu Principal        |   
+                           |_____________________________|
                            """);
     }
     public static void enter(Scanner in){
@@ -64,46 +67,20 @@ public class JavaApplication8 {
     
     public static void main(String[] args) {
         Scanner in = new Scanner(System.in);
-        boolean aux = true, checkPreview = true, check = true;
+        boolean check = true;
+        //checkPreview = Controla la salida del menu previo con 2 opciones
+        //check = Controla la salida del menu principal
         int fila, columna, option;
+        //option = opciones del menu
         String[][] array = new String[7][10];
+        //Asignación de O como espacio vacío, 7*10
         for(int i = 0; i<7; i++){
             for(int j = 0; j<10; j++){
                 array[i][j] = "O";
             }
         }
-        menuPreview();
-        while(checkPreview){
-            System.out.print("Ingrese opcion: ");
-            option = in.nextInt();
-            switch(option){
-                case 1:
-                    cine(array);
-                    do{
-                        System.out.print("Ingrese numero de fila: ");
-                        fila = in.nextInt();
-                        if(fila<0 || fila>6)System.out.println("Dato Invalido");
-                    }while(fila<0 || fila>6);
-                    do{
-                        System.out.print("Ingrese numero de columna: ");
-                        columna = in.nextInt();
-                        if(columna<0 || columna>9)System.out.println("Dato Invalido");
-                    }while(columna<0 || columna>9);
-                    in.nextLine();
-                    array [fila][columna] = "X";
-                    System.out.println("");
-                    checkPreview = false;
-                    enter(in);
-                    break;
-                case 2:
-                    checkPreview = false;
-                    check = false;
-                    System.out.println("Gracias por elegir Cinestar!!");break;
-                default: 
-                    System.out.println("Por favor, ingrese una opcion del menu"); break;
-            }
-        }
         while(check){
+            boolean escoger = true;
             menu();
             System.out.print("Ingrese opcion: ");
             option = in.nextInt();
@@ -112,33 +89,47 @@ public class JavaApplication8 {
                 case 1: 
                     cine(array);
                     enter(in);
+                    do{
+                        menu2();
+                        System.out.print("Ingrese opcion: ");
+                        option = in.nextInt();
+                        switch(option){
+                            case 0: System.out.println(); break;
+                            case 1:
+                                cine(array);
+                                while(escoger){
+                                    do{
+                                        System.out.print("Ingrese numero de fila: ");
+                                        fila = in.nextInt();
+                                        if(fila<0 || fila>6)System.out.println("Dato Invalido");
+                                    }while(fila<0 || fila>6);
+                                    do{
+                                        System.out.print("Ingrese numero de columna: ");
+                                        columna = in.nextInt();
+                                        if(columna<0 || columna>9)System.out.println("Dato Invalido");
+                                    }while((columna<0 || columna>9));
+                                    if (array[fila][columna].equals("X")){
+                                        System.out.println("Asiento Ocupado!!");
+                                    }else{
+                                        array[fila][columna] = "X";
+                                        escoger = false;
+                                        System.out.println("");
+                                        enter(in);
+                                        in.nextLine();
+                                    }
+                                }
+                                break;
+                            default: System.out.println("Por favor, ingrese una opcion valida..."); break;
+                        }
+                    }while(option>1 || option <0);
                     break;
                 case 2:
-                    cine(array);
-                    do{
-                        System.out.print("Ingrese numero de fila: ");
-                        fila = in.nextInt();
-                        if(fila<0 || fila>6)System.out.println("Dato Invalido");
-                    }while(fila<0 || fila>6);
-                    do{
-                        System.out.print("Ingrese numero de columna: ");
-                        columna = in.nextInt();
-                        if(columna<0 || columna>9){
-                            System.out.println("Dato Invalido");
-                        }else if (array[fila][columna].equals("X")){
-                            System.out.println("Asiento Ocupado!!");
-                        }
-                    }while((columna<0 || columna>9));
-                    in.nextLine();
-                    array [fila][columna] = "X";
-                    System.out.println("");
-                    enter(in);
-                    break;
+                    System.out.println("Viendo carrito..."); break;
                 case 3:
                     check = false;
-                    System.out.println("Gracias por elegir Cinestar!!");break;
+                    System.out.println("Vuelve Pronto!!"); break;
                 default: 
-                    System.out.println("Por favor, ingrese una opcion del menu"); break;
+                    System.out.println("Por favor, ingrese una opcion valida..."); break;
             }
         }
     }
